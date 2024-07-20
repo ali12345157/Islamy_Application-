@@ -21,8 +21,24 @@ class _SebhaTabState extends State<SebhaTab> {
 
   void increase() {
     setState(() {
-      counter++;
+      if (counter == 132) {
+        counter = 1; // Reset the counter to 1 when it reaches 133
+      } else {
+        counter++;
+      }
     });
+  }
+
+  String? getCounterMessage(int counter) {
+    return counter <= 33
+        ? AppLocalizations.of(context)!.subhan_allah
+        : counter <= 66
+        ? AppLocalizations.of(context)!.alhamd_lilah
+        : counter <= 99
+        ? AppLocalizations.of(context)!.there_is_no_god_but_god
+        : counter <= 132
+        ? AppLocalizations.of(context)!.allah_akbar
+        : null; // This handles counters greater than 132, though it should reset before this point
   }
 
   @override
@@ -72,16 +88,7 @@ class _SebhaTabState extends State<SebhaTab> {
             borderRadius: BorderRadius.circular(15.0),
           ),
           child: Text(
-            counter <= 33
-                ? AppLocalizations.of(context)!.subhan_allah
-                : counter <= 66
-                ? AppLocalizations.of(context)!.alhamd_lilah
-                : counter <= 99
-                ? AppLocalizations.of(context)!.there_is_no_god_but_god
-                : counter <= 132
-                ? AppLocalizations.of(context)!.allah_akbar
-                : '',
-            // Fallback text if counter exceeds 132
+            getCounterMessage(counter) ?? '', // Display the message or empty string if null
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 24.0,
