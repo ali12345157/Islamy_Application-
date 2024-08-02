@@ -1,116 +1,92 @@
 import 'package:flutter/material.dart';
-import 'package:islamy/Hadeth/Hadeth.dart'; // Adjust path as necessary
-import 'package:islamy/Quran/quran.dart'; // Adjust path as necessary
-import 'package:islamy/Sebha/sebha_tab.dart'; // Adjust path as necessary
-import 'package:islamy/Radio/radio_tab.dart'; // Adjust path as necessary
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:islamy/settings/settings.dart';
+import 'package:islamy/pro/app_config_provider.dart';
+import 'package:islamy/quran/quran_tab.dart';
+import 'package:islamy/radio/radio_tab.dart';
+import 'package:islamy/sebha/sebha_tab.dart';
+import 'package:islamy/setting/setting_tab.dart';
+import 'package:provider/provider.dart';
+
+import 'hadeth/hadeth_tab.dart';
 
 class HomeScreen extends StatefulWidget {
-  static const String routeName = 'HomeScreen';
-
-  const HomeScreen({Key? key}) : super(key: key);
+  static const String routName = 'home_screen';
 
   @override
-  _HomeScreenState createState() => _HomeScreenState();
+  State<HomeScreen> createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  int selected = 0;
+  int selectedIndex = 0;
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Stack(
-        children: [
-          Positioned.fill(
-            child: Image.asset(
-              'assets/photos/background.png',
-              fit: BoxFit.fill,
-            ),
-          ),
-          Column(
-            children: [
-              AppBar(
-                elevation: 0,
-                backgroundColor: Colors.transparent,
-                title: Text(
-                  AppLocalizations.of(context)!.app_title,
-                  style: TextStyle(fontSize: 30),
-                ),
-                centerTitle: true,
+    var provider = Provider.of<AppConfigProvider>(context);
+    return Stack(
+      children: [
+        provider.isDarkMode()
+            ? Image.asset(
+                'assets/image/background_dark.png',
+                width: double.infinity,
+                height: double.infinity,
+                fit: BoxFit.fill,
+              )
+            : Image.asset(
+                'assets/image/main_background.png',
+                width: double.infinity,
+                height: double.infinity,
+                fit: BoxFit.fill,
               ),
-              Expanded(
-                child: Center(
-                  child: _getSelectedScreen(selected),
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        showUnselectedLabels: true,
-        currentIndex: selected,
-        onTap: (index) {
-          setState(() {
-            selected = index;
-          });
-        },
-        selectedItemColor: Colors.black,
-        unselectedItemColor: Colors.white,
-        elevation: 0,
-        items: [
-          BottomNavigationBarItem(
-            backgroundColor: Color(0xffB7935F),
-            icon: ImageIcon(
-              AssetImage('assets/photos/moshaf_blue.png'),
-              color: selected == 0 ? Colors.black : Colors.white,
+        Scaffold(
+          appBar: AppBar(
+            title: Text(
+              AppLocalizations.of(context)!.app_title,
+              style: Theme.of(context).textTheme.bodyLarge,
             ),
-            label: AppLocalizations.of(context)!.quran,
           ),
-          BottomNavigationBarItem(
-            icon: ImageIcon(
-              AssetImage('assets/photos/ahadeth_icon.png'),
-              color: selected == 1 ? Colors.black : Colors.white,
+          bottomNavigationBar: Theme(
+            data: Theme.of(context).copyWith(
+              canvasColor: Theme.of(context).primaryColor,
             ),
-            label: AppLocalizations.of(context)!.hadeth,
+            child: BottomNavigationBar(
+                currentIndex: selectedIndex,
+                onTap: (index) {
+                  selectedIndex = index;
+                  setState(() {});
+                },
+                items: [
+                  BottomNavigationBarItem(
+                      icon:
+                          ImageIcon(AssetImage('assets/image/icon_radio.png')),
+                      label: AppLocalizations.of(context)!.radio),
+                  BottomNavigationBarItem(
+                      icon:
+                          ImageIcon(AssetImage('assets/image/icon_sebha.png')),
+                      label: AppLocalizations.of(context)!.sebha),
+                  BottomNavigationBarItem(
+                      icon:
+                          ImageIcon(AssetImage('assets/image/icon_hadeth.png')),
+                      label: AppLocalizations.of(context)!.hadeith),
+                  BottomNavigationBarItem(
+                      icon:
+                          ImageIcon(AssetImage('assets/image/icon_quran.png')),
+                      label: AppLocalizations.of(context)!.quran),
+                  BottomNavigationBarItem(
+                      icon: Icon(Icons.settings),
+                      label: AppLocalizations.of(context)!.setting),
+                ]),
           ),
-          BottomNavigationBarItem(
-            icon: ImageIcon(
-              AssetImage('assets/photos/sebha_blue.png'),
-              color: selected == 2 ? Colors.black : Colors.white,
-            ),
-            label: AppLocalizations.of(context)!.sebha,
-          ),
-          BottomNavigationBarItem(
-            icon: ImageIcon(
-              AssetImage('assets/photos/radio_icon.png'),
-              color: selected == 3 ? Colors.black : Colors.white,
-            ),
-            label: AppLocalizations.of(context)!.radio,
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.settings),
-            label: AppLocalizations.of(context)!.settings,
-          ),
-        ],
-      ),
+          body: tabs[selectedIndex],
+        ),
+      ],
     );
   }
 
-  Widget _getSelectedScreen(int index) {
-    switch (index) {
-      case 0:
-        return Quran(name: ''); // Adjust parameters as per your Quran widget
-      case 1:
-        return Hadeth(); // Adjust as per your Hadeth widget
-      case 2:
-        return SebhaTab(); // Adjust as per your SebhaTab widget
-      case 3:
-        return RadioTab(); // Adjust as per your RadioTab widget
-      default:
-        return SettingsTab(); // Adjust as per your SettingsTab widget
-    }
-  }
+  List<Widget> tabs = [
+    RadioTab(),
+    SebhaTab(),
+    HadethTab(),
+    QuranTab(),
+    SettingTab(),
+  ];
 }

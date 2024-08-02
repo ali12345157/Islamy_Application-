@@ -1,5 +1,6 @@
-import 'package:flutter/material.dart';
 import 'dart:async';
+
+import 'package:flutter/material.dart';
 
 import 'home_screen.dart';
 // Adjust path as necessary
@@ -18,7 +19,7 @@ class _SplashScreenState extends State<SplashScreen> {
     // Set a timer to navigate to the next screen after a few seconds
     Timer(Duration(seconds: 3), () {
       // Use Navigator.pushReplacementNamed for named routes
-      Navigator.pushReplacementNamed(context, HomeScreen.routeName);
+      Navigator.pushReplacementNamed(context, HomeScreen.routName);
     });
   }
 
@@ -27,7 +28,7 @@ class _SplashScreenState extends State<SplashScreen> {
     return Scaffold(
       body: Center(
         child: Image.asset(
-          'assets/photos/splash.png',
+          'assets/image/splash_screen.png',
           fit: BoxFit.cover, // Use BoxFit.cover to fit the image to the screen
           width: MediaQuery.of(context).size.width, // Optional: Set width to screen width
           height: MediaQuery.of(context).size.height, // Optional: Set height to screen height

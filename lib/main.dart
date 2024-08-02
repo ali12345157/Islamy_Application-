@@ -1,19 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:islamy/Quran/quran.dart';
-import 'package:islamy/Quran/sura.dart';
-import 'package:islamy/home_screen.dart';
-import 'package:islamy/pro/condig.dart';
-import 'package:islamy/splash_screen.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:islamy/pro/app_config_provider.dart';
+import 'package:islamy/quran/sura_detail.dart';
 import 'package:provider/provider.dart';
 
+import 'hadeth/hadeth_detail.dart';
+import 'home_screen.dart';
+import 'my_theme_data.dart';
+
 void main() {
-  runApp(
-    ChangeNotifierProvider(
-      create: (context) => Config(),
-      child: const MyApp(),
-    ),
-  );
+  runApp(ChangeNotifierProvider(
+    create: (context) => AppConfigProvider(),
+    child: MyApp(),
+  ));
 }
 
 class MyApp extends StatelessWidget {
@@ -21,17 +20,19 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var provider = Provider.of<Config>(context);
+    var provider = Provider.of<AppConfigProvider>(context);
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      initialRoute: SplashScreen.routeName,
+      initialRoute: HomeScreen.routName,
+      theme: MyThemeData.lightMode,
+      darkTheme: MyThemeData.darkMode,
+      themeMode: provider.appTheme,
       routes: {
-        HomeScreen.routeName: (context) => HomeScreen(),
-        Quran.routeName: (context) => Quran(name: ''),
-        Sura.routeName: (context) => Sura(),
-        SplashScreen.routeName: (context) => SplashScreen(),
+        HomeScreen.routName: (context) => HomeScreen(),
+        SuraDetail.routName: (context) => SuraDetail(),
+        HadethDetail.routName: (context) => HadethDetail(),
       },
-      locale: Locale(provider.appLanguage),  // Fixed Locale constructor usage
+      locale: Locale(provider.appLanguage),
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
     );
